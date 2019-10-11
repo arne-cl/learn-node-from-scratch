@@ -1,9 +1,14 @@
 const express = require('express');
 const router = express.Router();
 
-// Do work here
 router.get('/', (req, res) => {
-  res.send('Hey! It works!');
+  res.send('Hey! It works! Echt');
 });
+
+router.get('/json', (req, res) => {
+  const user = {name: 'John', age: 42};
+  res.json(user);
+});
+
 
 module.exports = router;
