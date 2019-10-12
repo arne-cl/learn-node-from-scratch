@@ -3,7 +3,7 @@ const router = express.Router();
 
 const storeController = require('../controllers/storeController')
 
-router.get('/', storeController.homePage);
+router.get('/', storeController.myMiddleware, storeController.homePage);
 
 // GET /name-age-params?name=John&age=23
 router.get('/name-age-params', storeController.nameAgeExample);

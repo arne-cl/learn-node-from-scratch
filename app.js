@@ -1,4 +1,5 @@
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const morgan = require('morgan'); // for logging
 
 const path = require('path'); // access server paths
@@ -23,6 +24,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 // setup templating engine (pug aka jade)
 app.set('views', path.join(__dirname, 'views')); // this is the folder where we keep our pug files
 app.set('view engine', 'pug');
+
+// populates req.cookies with any cookies that came along with the request
+app.use(cookieParser());
 
 // pass variables to our templates + all requests
 app.use((req, res, next) => {

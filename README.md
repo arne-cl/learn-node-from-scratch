@@ -253,9 +253,157 @@ block content
 06 - Core Concept - Template Helpers
 ====================================
 
-07 - Core Concept - Controllers and the MVC Pattern.mp4
-08 - Core Concept - Middleware and Error Handling.mp4
-09 - Creating our Store Model.mp4
+`helpers.js` contains functions and constants that can be used as variables
+in pug templates.
+
+- is imported in `app.js` and stored in the variable `h`
+- helpers are made available in templates by putting them into a middleware
+
+```
+const helpers = require('./helpers');
+[...]
+app.use((req, res, next) => {
+  res.locals.h = helpers;
+  next();
+});
+```
+
+For example, `siteName` from `helpers.js`
+
+```
+exports.siteName = `Now That's Delicious!`;
+```
+
+is now available in templates by using:
+
+```
+html
+  head
+    title= `${h.siteName}`
+```
+
+moment.js
+---------
+
+- relative date/timestamp library, can be used in templates like this:
+
+```
+p The sale ends in #{h.moment().endOf('day').fromNow()}
+```
+
+
+07 - Core Concept - Controllers and the MVC Pattern
+===================================================
+
+To follow the MVC pattern, we will outsource the functions that are called
+in the routes into `./controllers`, i.e. we turn this:
+
+```
+router.get('/', (req, res) => {
+  res.render('hello', {
+    name: req.query.name,
+    age: req.query.age
+  });
+});
+```
+
+into this:
+
+```
+const storeController = require('../controllers/storeController')
+router.get('/', storeController.homePage);
+```
+
+and putting the function into `./controllers/storeController.js`:
+
+```
+exports.homePage = (req, res) => {
+  res.render('hello', {
+    name: req.query.name,
+    age: req.query.age,
+  });
+}
+```
+
+
+08 - Core Concept - Middleware and Error Handling
+=================================================
+
+- **middleware**: function that get called for each incoming request
+  before the response is sent back
+    - the output of one middleware is handed over to the input of the next
+      middleware by calling `next()`
+
+Route-specific middleware
+-------------------------
+
+- is only called for specific routes
+
+```
+// example middleware that adds a name to each incoming request
+exports.myMiddleware = (req, res, next) => {
+  req.name = 'John';
+  next();
+};
+```
+
+This can now be called in a route before the actual response:
+
+```
+router.get('/', storeController.myMiddleware, storeController.homePage);
+```
+
+Since ``myMiddleware`` hands over its output using `next()` and is called
+before ``homePage``, the latter function can access the `req.name` value:
+
+```
+exports.homePage = (req, res) => {
+  console.log(req.name);
+  res.render('index');
+};
+```
+
+Global middleware
+-----------------
+
+- is called for every request that comes into the application
+  before it get to the router
+
+app.js
+------
+
+- contains all global middleware for this app, i.e. all calls to `app.use(...)`
+  are invoking some kind of middleware for each incoming request
+
+cookie-parser
+-------------
+
+We can set a cookie in any middleware like this:
+
+```
+exports.myMiddleware = (req, res, next) => {
+  req.name = 'John';
+  res.cookie('name', 'evil-cookie', {maxAge: 1000000});
+  next();
+};
+```
+
+It will be added to `res.cookies` (which can be viewed in Chrome DevTools
+>> Application >> Storage >> Cookies) by `cookie-parser`, which is added as
+a global middleware in `app.js`:
+
+```
+const cookieParser = require('cookie-parser');
+[...]
+app.use(cookieParser());
+```
+
+
+09 - Creating our Store Model
+=============================
+
+
+
 10 - Saving Stores and using Mixins.mp4
 11 - Using Async Await.mp4
 12 - Flash Messages.mp4
