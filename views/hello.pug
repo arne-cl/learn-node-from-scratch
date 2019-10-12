@@ -1,0 +1,30 @@
+extends layout
+//- we will use views/layout.pug as our base template
+
+block content
+    // comment shown in HTML
+    //- comment not shown in HTML
+
+    h1 Hello, world!
+
+    //- This is how we interpolate strings we gave to the render function as params
+    h2 #{name} is #{age} years old.
+
+
+    //- <div class="wrapper">
+    //- div is the default, so we could just write ".wrapper" instead
+    div.wrapper 
+        p This is a simple paragraph.
+
+        //- <p id="second"></p>
+        p#second Yet another paragraph.
+      
+        //- <img class="animal" src="dog.jpg" alt=`This is John's dog.`/>
+        //- when putting params into tags, we need to use ES6 string literals.
+        img.animal(src="dog.jpg" alt=`This is ${name}'s dog.`)
+
+    //- you can use JS inside a template, but please don't
+    - const upName = name.toUpperCase();
+    h2 name in uppercase: #{upName}
+
+
