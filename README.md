@@ -104,22 +104,32 @@ Configure IDE
 ========================
 
 - we'll use MongoDB 3.2+ as our document store / database
-- set up MongoDB locally (or use a hosted service like mlab.com)
-    - [how to install on ubuntu with mongodb-maintained packages](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/#install-mongodb-community-edition-using-deb-packages)
-    - [how to set a password in MongoDB](https://www.scaleway.com/en/docs/install-and-secure-mongodb-on-ubuntu/)
+- set up MongoDB locally
+
+Install on Ubuntu / Linux Mint
+------------------------------
+
+- [how to install on ubuntu with mongodb-maintained packages](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/#install-mongodb-community-edition-using-deb-packages)
+- [how to set a password in MongoDB](https://www.scaleway.com/en/docs/install-and-secure-mongodb-on-ubuntu/)
+
+Install on arch linux
+---------------------
+
+https://wiki.archlinux.org/index.php/MongoDB
+
+```
+sudo mkdir -p /data/db
+sudo mongod --fork --logpath /tmp/mongo.log
+```
+
+Configure MongoDB
+-----------------
 
 - default local URL: ``mongodb://127.0.0.1:27017``
 
 - copy ``variables.env.samples`` to ``variables.env``
 - in ``variables.env``, replace ``DATABASE`` value with ``mongodb://$USERNAME:$PASSWORD@127.0.0.1:27017/admin``
 - add ``variables.env`` to your ``.gitignore`` file
-
-- create default dir and start MongoDB daemon:
-
-```
-sudo mkdir -p /data/db
-sudo mongod # or 'sudo mongod --fork --syslog' to run it as a daemon
-```
 
 - test, if mongodb is working
 
@@ -402,9 +412,40 @@ app.use(cookieParser());
 09 - Creating our Store Model
 =============================
 
+- unlike Elasticsearch, MongoDB uses schema by default
+
+models/Store.js
+---------------
+
+```
+const storeSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    trim: true,
+    required: 'Please enter a store name!' // true would work, but emits an unhelpful error msg
+  },
+  slug: String,
+  description: {
+    type: String,
+    trim: true
+  },
+  tags: [String]
+});
+```
+
+We add middleware to create slugs for userfriendly URLs automatically.
+Our model(s) are then imported once in `start.js` as a singleton.
+
+```
+require('./models/Store');
+```
 
 
-10 - Saving Stores and using Mixins.mp4
+10 - Saving Stores and using Mixins
+===================================
+
+
+
 11 - Using Async Await.mp4
 12 - Flash Messages.mp4
 13 - Querying our Database for Stores.mp4
@@ -419,6 +460,8 @@ app.use(cookieParser());
 22 - Multiple Query Promises with Async Await.mp4
 
 
+
+
 Rewriting the whole thing from scratch
 ======================================
 
@@ -426,3 +469,22 @@ Rewriting the whole thing from scratch
 - create a route and a minimal start.js
 
 - we don't need the ``body-parser`` parser library mentioned in video 04
+
+Get rid of MongoDB warnings
+---------------------------
+
+```
+DeprecationWarning: current URL string parser is deprecated, and will be removed in a future version. To use the new parser, pass option { useNewUrlParser: true } to MongoClient.connect.
+
+DeprecationWarning: current Server Discovery and Monitoring engine is deprecated, and will be removed in a future version. To use the new Server Discover and Monitoring engine, pass option { useUnifiedTopology: true } to the
+ MongoClient constructor.
+```
+
+- can be avoided by setting
+
+```
+mongoose.connect(process.env.DATABASE, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
+```

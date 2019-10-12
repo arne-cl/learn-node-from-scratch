@@ -28,7 +28,6 @@ exports.siteName = `Now That's Delicious!`;
 //       a.nav__link(href=item.slug, class=(currentPath.startsWith(item.slug) ? 'nav__link--active' : ''))
 //         != h.icon(item.icon)
 //         span #{item.title}
-
 exports.menu = [
   { slug: '/stores', title: 'Stores', icon: 'store', },
   { slug: '/tags', title: 'Tags', icon: 'tag', },
