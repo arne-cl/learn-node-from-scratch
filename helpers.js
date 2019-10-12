@@ -5,6 +5,9 @@
 // FS is a built in module to node that let's us read files from the system we're running on
 const fs = require('fs');
 
+// allows relative timestamps like 'Posted 5 minutes ago'
+exports.moment = require('moment');
+
 // Dump is a handy debugging function we can use to sort of "console.log" our data
 exports.dump = (obj) => JSON.stringify(obj, null, 2);
 
@@ -16,6 +19,15 @@ exports.icon = (name) => fs.readFileSync(`./public/images/icons/${name}.svg`);
 
 // Some details about the site
 exports.siteName = `Now That's Delicious!`;
+
+// These menu items are used in the header of 'layout.pug'.
+// They can be used in for-loops in pug templates like this:
+//
+//   each item in h.menu
+//     li.nav__item
+//       a.nav__link(href=item.slug, class=(currentPath.startsWith(item.slug) ? 'nav__link--active' : ''))
+//         != h.icon(item.icon)
+//         span #{item.title}
 
 exports.menu = [
   { slug: '/stores', title: 'Stores', icon: 'store', },

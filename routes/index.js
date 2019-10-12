@@ -9,6 +9,7 @@ router.get('/', (req, res) => {
   res.render('hello', {
     name: req.query.name,
     age: req.query.age,
+    title: 'purrfect'
   });
 });
 
