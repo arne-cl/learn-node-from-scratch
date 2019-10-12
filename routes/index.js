@@ -1,9 +1,21 @@
 const express = require('express');
 const router = express.Router();
 
+// Returns a rendered request with name/age params.
+// Example: GET /?name=John&age=23
 router.get('/', (req, res) => {
-  res.send('Hey! It works! Echt');
+  // render 'views/hello.pug'
+  // (we specified the folder and templating engine in app.js)
+  res.render('hello', {
+    name: req.query.name,
+    age: req.query.age,
+  });
 });
+
+router.get('/example', (req, res) => {
+  res.send('Hello world!');
+});
+
 
 // take a GET request and echo the parameters as JSON.
 // Example: GET /json?name=John&age=23

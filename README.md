@@ -188,11 +188,71 @@ const app = express();
 [...]
 # all routes starting with '/' will be handled by these routes
 app.use('/', routes);
+
+# we could have multiple route handlers:
+# app.use('/admin', adminRoutes);
+```
+
+- URL query params are available in `req.query`
+
+
+05 - Core Concept - Templating
+==============================
+
+- `res.render` renders templates in a response
+- we'll use the pug templating language (original name: jade)
+    - templates are stored in `./views` folder
+
+- pug uses significant whitespace for nesting tags
+- comments must be on their own line
+
+hello.pug
+---------
+```
+h1 Hello, world!
+
+// comment shown in HTML
+//- comment not shown in HTML
+
+//- <div class="wrapper">
+div.wrapper 
+  p This is a simple paragraph.
+
+  //- <p id="second"></p>
+  p#second Yet another paragraph.
+  
+  //- <img class="animal" src="dog.jpg" alt="Dog"/>
+  img.animal(src="dog.jpg" alt="Dog")
+```
+
+Put variables / request params into template
+--------------------------------------------
+
+```
+// take a param from the render function and put it into a string
+h2 #{name} is #{age} years old.
+
+// when putting params into tags, we need to use ES6 string literals.
+img.animal(src="dog.jpg" alt=`This is ${name}'s dog.`)
+```
+
+Use base templates
+------------------
+
+If you have a `layout.pug` template with a section ``block content``,
+you can fill/override it in another template like this:
+
+```
+extends layout
+
+block content
+  h1 This is the headline!
 ```
 
 
-05 - Core Concept - Templating.mp4
-06 - Core Concept - Template Helpers.mp4
+06 - Core Concept - Template Helpers
+====================================
+
 07 - Core Concept - Controllers and the MVC Pattern.mp4
 08 - Core Concept - Middleware and Error Handling.mp4
 09 - Creating our Store Model.mp4
@@ -217,4 +277,4 @@ Rewriting the whole thing from scratch
 - run ``npm init`` to create a ``package.json``
 - create a route and a minimal start.js
 
-
+- we don't need the ``body-parser`` parser library mentioned in video 04
