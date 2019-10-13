@@ -3,10 +3,17 @@ const router = express.Router();
 
 const storeController = require('../controllers/storeController')
 
+// { foo } object destructuring: allows us to just import 'catchErrors'
+// instead of importing 'errorHandlers' and then referencing 'errorHandlers.catchErrors'
+const { catchErrors } = require('../handlers/errorHandlers')
+
+
 router.get('/', storeController.homePage);
 
 router.get('/add', storeController.addStore);
-router.post('/add', storeController.createStore);
+// createStore is an async function that doesn't catch any potential errors,
+// so we'll wrap it in catchErrors().
+router.post('/add', catchErrors(storeController.createStore));
 
 
 // GET /name-age-params?name=John&age=23

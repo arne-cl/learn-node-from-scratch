@@ -128,7 +128,9 @@ Configure MongoDB
 - default local URL: ``mongodb://127.0.0.1:27017``
 
 - copy ``variables.env.samples`` to ``variables.env``
-- in ``variables.env``, replace ``DATABASE`` value with ``mongodb://$USERNAME:$PASSWORD@127.0.0.1:27017/admin``
+- in ``variables.env``, replace ``DATABASE`` value with ``mongodb://$USERNAME:$PASSWORD@127.0.0.1:27017/$DATABASENAME``
+    - add a user/password using the guide above
+    - add a database using either MongoDB Compass or robo3t (and add the user to it)
 - add ``variables.env`` to your ``.gitignore`` file
 
 - test, if mongodb is working
@@ -140,6 +142,8 @@ bye
 ```
 
 - installl [MongoDB Compass](https://www.mongodb.com/download-center/compass) GUI and connect to the database
+    - this is an Electron app
+    - try [robo3t](https://robomongo.org/) instead (open-source, writting in C++/Qt)
 
 
 03 - Starter Files and Environmental Variables
@@ -507,9 +511,64 @@ exports.createStore = (req, res) => {
 11 - Using Async Await
 ======================
 
+We need to look at `async` and `await`, before we can work with the
+`mongogoose` MongoDB client.
+
+Since we're using ES Promises with mongoose:
+
+```
+// start.js
+mongoose.Promise = global.Promise;
+```
+
+we can use async/await when saving data to MongoDB.
+(We don't necessarily want to wait for it to finish, and we also want to
+avoid "callback hell".)
+
+Here's our controller. It reads the form data from the request body.
+Since we use a strict schema, we don't have to validate the data
+(at least for now):
+
+```
+// Import our database schema from models/Store.js.
+const Store = mongoose.model('Store');
+
+exports.createStore = async (req, res) => {
+   const store = new Store(req.body);
+   await store.save();
+    res.redirect('/');
+};
+```
+
+The `save()` operation might fail, but Wes doesn't want to wrap it
+in a try/catch block, so he uses some middleware error catching magic
+to avoid it. It is defined in `handlers/errorHandlers.js`:
+
+```
+rts.catchErrors = (fn) => {
+  return function(req, res, next) {
+    return fn(req, res, next).catch(next);
+  };
+};
+```
+
+and is imported and wrapped around the `createStore` controller in
+`routes/index.js`:
+
+```
+// { foo } object destructuring: allows us to just import 'catchErrors'
+// instead of importing 'errorHandlers' and then referencing 'errorHandlers.catchErrors'
+const { catchErrors } = require('../handlers/errorHandlers')
+[...]
+router.post('/add', catchErrors(storeController.createStore));
+```
 
 
-12 - Flash Messages.mp4
+12 - Flash Messages
+===================
+
+
+
 13 - Querying our Database for Stores.mp4
 14 - Creating an Editing Flow for Stores.mp4
 15 - Saving Lat and Lng for each store.mp4

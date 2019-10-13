@@ -1,3 +1,8 @@
+const mongoose = require('mongoose');
+
+// Import our database schema from models/Store.js.
+const Store = mongoose.model('Store');
+
 exports.homePage = (req, res) => {
   // req.name should be available if our route calls myMiddleware before homePage
   console.log(req.name);
@@ -12,8 +17,17 @@ exports.addStore = (req, res) => {
     });
 };
 
-exports.createStore = (req, res) => {
-    res.json(req.body);
+exports.createStore = async (req, res) => {
+    // Create a new Store instance directly from the form fields.
+    // Since we're using a strict schema, we don't have to worry about
+    // missing/superflous fields in the incoming request.
+    const store = new Store(req.body);
+
+    // Wait until the Store instance is saved in MongoDB.
+    // To avoid wrapping this in a try/catch block,
+    // we will wrap the function call in 'errorHandlers.catchErrors'.
+    await store.save();
+    res.redirect('/');
 };
 
 
