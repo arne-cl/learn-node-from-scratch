@@ -6,6 +6,7 @@ const Store = mongoose.model('Store');
 exports.homePage = (req, res) => {
   // req.name should be available if our route calls myMiddleware before homePage
   console.log(req.name);
+
   res.render('index', {
     title: 'Home'
   });
@@ -29,7 +30,8 @@ exports.createStore = async (req, res) => {
     await store.save();
     
     req.flash('success', `Successfully Created ${store.name}. Care to leave a review?`);
-    res.redirect('/');
+    // redirect to the page of the store we just created
+    res.redirect(`/store/${store.slug}`);
 };
 
 

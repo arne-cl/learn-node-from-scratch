@@ -603,10 +603,29 @@ app.use((req, res, next) => {
   res.locals.flashes = req.flash();
   next();
 });
-``
+```
 
-Then, we can use flashes **before** a new request comes in (or when a request
-is redirected:
+Wes built his own flash message handling in `layout.pug`, which looks like this:
+
+```
+    block messages
+      if locals.flashes
+        .inner
+          .flash-messages
+            - const categories = Object.keys(locals.flashes)
+            each category in categories
+              each message in flashes[category]
+                .flash(class=`flash--${category}`)
+
+                  // "!= message" means HTML-parse "message" instead of showing it verbatim
+                  p.flash__text!= message
+
+                  // remove the message on button click
+                  button.flash__remove(onClick="this.parentElement.remove()") &times;
+```
+
+After all this setup, we can use finally flashes, but they will only show up
+in the response to the **next** request (or when we redirect the current request)!
 
 ```
 exports.createStore = async (req, res) => {
@@ -614,9 +633,11 @@ exports.createStore = async (req, res) => {
     await store.save();
     
     req.flash('success', `Successfully Created ${store.name}. Care to leave a review?`);
-    res.redirect('/');
+    // redirect to the page of the store we just created
+    res.redirect(`/store/${store.slug}`);
 };
 ```
+
 
 
 13 - Querying our Database for Stores
