@@ -4,6 +4,8 @@
   "description": "a cat café review site",
   "main": "start.js",
   "scripts": {
+    "watch": "nodemon ./start.js --ignore public/",
+    "start": "npm run watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -14,6 +16,7 @@
     "moment": "^2.24.0",
     "mongoose": "^5.7.4",
     "morgan": "^1.9.1",
+    "nodemon": "^1.19.3",
     "pug": "^2.0.4",
     "saslprep": "^1.0.3",
     "slugs": "^0.1.3"
