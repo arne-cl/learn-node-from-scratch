@@ -1,5 +1,6 @@
 const express = require('express');
-const morgan = require('morgan'); // for logging
+const morgan = require('morgan'); // logging
+const bodyParser = require('body-parser') // parsing the request body
 
 const path = require('path'); // access server paths
 
@@ -16,6 +17,12 @@ if (app.get('node_env') == 'production') { // log request errors to file in prod
 } else { // log all requests to STDOUT in dev mode
   app.use(morgan('dev'));
 }
+
+// Node does not parse the request body by itself. We have to use body-parser
+// for this, e.g. when we want to retrieve form data.
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 
 // serves up static files from the public folder. Anything in public/ will just be served up as the file it is
 // Example: /public/dist/foo.jpg will be served by a GET /dist/foo.jpg call
