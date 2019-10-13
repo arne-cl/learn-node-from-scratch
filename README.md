@@ -197,9 +197,9 @@ module.exports = router;
 
 ```
 const routes = require('./routes/index');
-[...]
+
 const app = express();
-[...]
+
 # all routes starting with '/' will be handled by these routes
 app.use('/', routes);
 
@@ -275,7 +275,7 @@ in pug templates.
 
 ```
 const helpers = require('./helpers');
-[...]
+
 app.use((req, res, next) => {
   res.locals.h = helpers;
   next();
@@ -408,7 +408,7 @@ a global middleware in `app.js`:
 
 ```
 const cookieParser = require('cookie-parser');
-[...]
+
 app.use(cookieParser());
 ```
 
@@ -559,7 +559,7 @@ and is imported and wrapped around the `createStore` controller in
 // { foo } object destructuring: allows us to just import 'catchErrors'
 // instead of importing 'errorHandlers' and then referencing 'errorHandlers.catchErrors'
 const { catchErrors } = require('../handlers/errorHandlers')
-[...]
+
 router.post('/add', catchErrors(storeController.createStore));
 ```
 
@@ -567,9 +567,63 @@ router.post('/add', catchErrors(storeController.createStore));
 12 - Flash Messages
 ===================
 
+- goal: add color-highlighted messages to an existing page (e.g. to signal
+  that an order has been submitted successfully) -- in contrast to
+  creating/redirecting the user to a new page
+
+We need to add the `connect-flash` middleware to `app.js`
+(it depends on session support, which depends on a session store):
+
+```
+const session = require('express-session');
+const mongoose = require('mongoose');
+const MongoStore = require('connect-mongo')(session); // MongoDB session store
+const flash = require('connect-flash');
+
+// Sessions allow us to store data on visitors from request to request
+// This keeps users logged in and allows us to send flash messages
+app.use(session({
+  secret: process.env.SECRET,
+  key: process.env.KEY,
+  resave: false,
+  saveUninitialized: false,
+  store: new MongoStore({ mongooseConnection: mongoose.connection })
+}));
+
+app.use(flash());
+```
+
+To make the `flash` messages trigger our CSS, we need to store them where
+they can be checked by our templates (i.e. in our pass-variables-to-templates
+middleware):
+
+```
+app.use((req, res, next) => {
+  [...]
+  res.locals.flashes = req.flash();
+  next();
+});
+``
+
+Then, we can use flashes **before** a new request comes in (or when a request
+is redirected:
+
+```
+exports.createStore = async (req, res) => {
+    const store = new Store(req.body);
+    await store.save();
+    
+    req.flash('success', `Successfully Created ${store.name}. Care to leave a review?`);
+    res.redirect('/');
+};
+```
 
 
-13 - Querying our Database for Stores.mp4
+13 - Querying our Database for Stores
+=====================================
+
+
+
 14 - Creating an Editing Flow for Stores.mp4
 15 - Saving Lat and Lng for each store.mp4
 16 - Geocoding Data with Google Maps.mp4

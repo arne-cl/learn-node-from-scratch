@@ -27,6 +27,8 @@ exports.createStore = async (req, res) => {
     // To avoid wrapping this in a try/catch block,
     // we will wrap the function call in 'errorHandlers.catchErrors'.
     await store.save();
+    
+    req.flash('success', `Successfully Created ${store.name}. Care to leave a review?`);
     res.redirect('/');
 };
 

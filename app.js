@@ -1,8 +1,11 @@
 const express = require('express');
 const morgan = require('morgan'); // logging
 const bodyParser = require('body-parser') // parsing the request body
-
+const flash = require('connect-flash'); // add messages to existing pages
 const path = require('path'); // access server paths
+const mongoose = require('mongoose');
+const session = require('express-session'); // session support (needed for flash messages)
+const MongoStore = require('connect-mongo')(session); // MongoDB session store
 
 const helpers = require('./helpers'); // helper functions and constants used by Wes Bos
 const routes = require('./routes/index');
@@ -32,10 +35,26 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('views', path.join(__dirname, 'views')); // this is the folder where we keep our pug files
 app.set('view engine', 'pug');
 
+// Sessions allow us to store data on visitors from request to request
+// This keeps users logged in and allows us to send flash messages
+app.use(session({
+  secret: process.env.SECRET,
+  key: process.env.KEY,
+  resave: false,
+  saveUninitialized: false,
+  store: new MongoStore({ mongooseConnection: mongoose.connection })
+}));
+
+// The flash middleware let's us use req.flash('error', 'Shit!'),
+// which will then pass that message to the next page the user requests.
+// req.flash() will not work without sessions!
+app.use(flash());
+
 // pass variables to our templates + all requests
 app.use((req, res, next) => {
   // all variables defined in helpers.js are now available as 'h.something'
   res.locals.h = helpers;
+  res.locals.flashes = req.flash();
   res.locals.user = req.user || null;
   res.locals.currentPath = req.path;
   next();
