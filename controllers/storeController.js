@@ -6,6 +6,17 @@ exports.homePage = (req, res) => {
   });
 };
 
+exports.addStore = (req, res) => {
+    res.render('editStore', {
+        title: 'Add Store',
+    });
+};
+
+exports.createStore = (req, res) => {
+    res.json(req.body);
+};
+
+
 // Returns a rendered request with name/age params.
 // Example: GET /?name=John&age=23
 exports.nameAgeExample = (req, res) => {

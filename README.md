@@ -444,9 +444,71 @@ require('./models/Store');
 10 - Saving Stores and using Mixins
 ===================================
 
+- goal: create the `/add` page with a form for adding stores/restaurants to our database
+- we'll not yet store it in the db, but merely return the form data back
+  as JSON after the form is `POST`ed
+
+Mixins
+------
+
+Mixins are templates that can be imported into other templates and used like
+functions with parameters, e.g. the mixin `views/mixins/_storeForms.pug`:
+
+```
+mixin storeForm(store = {})
+    p #{store.name}
+```
+
+has a `store` parameter. It can be used in `views/editStore.pug` like this:
+
+```
+extends layout
+include mixins/_storeForm
+
+block content
+    div
+        +storeForm({name: 'Joe's Pizza'})
+```
+
+Sending and parsing HTML forms
+------------------------------
+
+We can create a form in `pug` that `POST`s data to the URL `/add`:
+
+```
+mixin storeForm(store = {})
+    form(action="/add" method="POST")
+
+        label(for="name") Store Name
+        // 'name' field value has to correspond to the schema we want to store
+        // this in later on
+        input(type="text" name="name")
+        
+        input(type="submit" value="Save")
+```
+
+To make this work, we need to add a `post` handler to the `/add` route:
+
+```
+router.get('/add', storeController.addStore);
+router.post('/add', storeController.createStore);
+```
+
+For now, the `createStore` controller will just respond with the form fields/values:
+
+```
+exports.createStore = (req, res) => {
+    // will not work without the 'body-parser' middleware in app.js
+    res.json(req.body);
+};
+```
 
 
-11 - Using Async Await.mp4
+11 - Using Async Await
+======================
+
+
+
 12 - Flash Messages.mp4
 13 - Querying our Database for Stores.mp4
 14 - Creating an Editing Flow for Stores.mp4
@@ -488,3 +550,9 @@ mongoose.connect(process.env.DATABASE, {
   useUnifiedTopology: true
 });
 ```
+
+Hot reloading
+-------------
+
+- uneccessary bloat: we need `nodemon` to make this work, but neither `concurrently`
+  (adds 59 packages) or `webpack` (adds 178 packages) are needed

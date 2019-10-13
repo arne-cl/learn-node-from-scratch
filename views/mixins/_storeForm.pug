@@ -1,0 +1,21 @@
+mixin storeForm(store = {})
+    // TODO: remove after documentation // p It works. Store name: #{store.name}
+
+    //- class="card" is used by our CSS
+    form(action="/add" method="POST" class="card")
+        
+        //- We need to fill all fields in models/Store.js::storeSchema .
+        label(for="name") Store Name
+        input(type="text" name="name")
+        
+        label(for="description") Description
+        textarea(name="description")
+
+        //- define choices of tags to add to the restaurant (list of checkboxes)
+        - const choices = ['Wifi', 'Open Late', '24/7', 'Vegan', 'Cats']
+        ul.tags
+            each choice in choices
+                .tag.tag__choice
+                    input(type="checkbox" id=choice value=choice name="tags")
+                    label(for=choice) #{choice}
+        input(type="submit" value="Save" class="button")
