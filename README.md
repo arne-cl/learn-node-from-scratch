@@ -690,3 +690,23 @@ Hot reloading
 
 - uneccessary bloat: we need `nodemon` to make this work, but neither `concurrently`
   (adds 59 packages) or `webpack` (adds 178 packages) are needed
+
+
+Slug creation
+-------------
+
+In Video 12, Wes claims that we need to combine store creation and saving into
+``const store = await (new Store(req.body)).save()`` in order to make
+`store.slug` available. This is not true. It will just work the way it was:
+
+```
+exports.createStore = async (req, res) => {
+    const store = new Store(req.body);
+    await store.save();
+
+    req.flash('success', `Successfully Created ${store.name}. Care to leave a review?`);
+    // redirect to the page of the store we just created
+    res.redirect(`/store/${store.slug}`);
+};
+```
+
