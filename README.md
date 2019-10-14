@@ -643,9 +643,67 @@ exports.createStore = async (req, res) => {
 13 - Querying our Database for Stores
 =====================================
 
+- goal: list all stores when hitting the homepage or `/stores`
+
+First, we create a reusable "store overview" as a mixin (`views/mixins/_storeCard.pug`):
+
+```
+mixin storeCard(store = {})
+    .store
+        //- String interpolation with fallback: ${store.photo || 'store.png'} .
+        //- If the store has no photo, show store.png instead.
+        img(src=`/uploads/${store.photo || 'store.png'}`)
+        
+        h2.title
+            a(href=`/store/${store.slug}`)
+
+        .store__details
+            p= store.description
+
+```
+
+We can now use it in the `stores.pug` view:
+
+```
+extends layout
+
+include mixins/_storeCard
+
+block content
+    .inner
+    h2= title
+
+    .stores
+        each store in stores
+            +storeCard(store)
+```
 
 
-14 - Creating an Editing Flow for Stores.mp4
+The `getStores` controller retrieves all stores from the db and
+renders them in the `stores` template:
+
+```
+exports.getStores = async (req, res) => {
+    const stores = await Store.find();
+    res.render('stores', {title: 'Stores', stores: stores});
+};
+```
+
+Finally, we make the `stores` view available under the `/` and `/stores`
+routes. Since our db query is async, we need to wrap the controllers
+in our `catchErrors()` middleware:
+
+```
+router.get('/', catchErrors(storeController.getStores));
+router.get('/stores', catchErrors(storeController.getStores));
+```
+
+
+14 - Creating an Editing Flow for Stores
+========================================
+
+
+
 15 - Saving Lat and Lng for each store.mp4
 16 - Geocoding Data with Google Maps.mp4
 17 - Quick Data Visualization Tip.mp4

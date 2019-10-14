@@ -15,7 +15,6 @@ exports.homePage = (req, res) => {
 exports.getStores = async (req, res) => {
     // get all stores from db
     const stores = await Store.find();
-    console.log(stores);
     // ES pro tip for dicts: if key and value are the same, you can just pass the key,
     // i.e. {stores} equals {stores: stores}
     res.render('stores', {title: 'Stores', stores: stores});
