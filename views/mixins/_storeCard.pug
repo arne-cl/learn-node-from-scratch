@@ -1,0 +1,17 @@
+mixin storeCard(store = {})
+    .store
+        .store__hero
+            .store__actions
+                button soon
+
+            //- String interpolation with fallback: ${store.photo || 'store.png'} .
+            //- If the store has no photo, show store.png instead
+            img(src=`/uploads/${store.photo || 'store.png'}`)
+            
+            h2.title
+                //- Just show the first 50 chars of the store name
+                a(href=`/store/${store.slug}`)= store.name.slice(0, 50)
+
+        .store__details
+            //- Just show the first 25 words of the description
+            p= store.description.split(' ').slice(0, 25).join(' ')

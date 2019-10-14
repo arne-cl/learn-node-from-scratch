@@ -7,12 +7,14 @@ const storeController = require('../controllers/storeController')
 // instead of importing 'errorHandlers' and then referencing 'errorHandlers.catchErrors'
 const { catchErrors } = require('../handlers/errorHandlers')
 
+// All async controllers must be wrapped in catchErrors(), because we didn't
+// bother to wrap them in try/catch blocks!
 
-router.get('/', storeController.homePage);
+
+router.get('/', catchErrors(storeController.getStores));
+router.get('/stores', catchErrors(storeController.getStores));
 
 router.get('/add', storeController.addStore);
-// createStore is an async function that doesn't catch any potential errors,
-// so we'll wrap it in catchErrors().
 router.post('/add', catchErrors(storeController.createStore));
 
 

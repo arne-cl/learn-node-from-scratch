@@ -1,0 +1,14 @@
+extends layout
+
+include mixins/_storeCard
+
+block content
+    .inner
+    h2= title
+
+    // dump is defined in helpers.js and makes any JS object printable
+    // pre= h.dump(stores)
+
+    .stores
+        each store in stores
+            +storeCard(store)
