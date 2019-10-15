@@ -2,23 +2,9 @@ mixin storeCard(store = {})
     .store
         .store__hero
             .store__actions
-                //- this create a <div> inside another <div>
-                .store__action.store__action--edit
-
                 //- MongoDB adds unique IDs to each document under the _id key
                 a(href=`/stores/${store._id}/edit`)
-
-                    //- '!=' is for unescaped output, e.g.
-                    //- while div(escaped="<code>") produces <div escaped="&lt;code&gt;"></div>
-                    //- div(unescaped!="<code>") produces <div unescaped="<code>"></div>
-
-                    //- The icon() function from helpers.js loads an SVG file
-                    //- (here: pencil.svg) and pastes its content into the HTML.
-                    //- Frontend people use this trick, so they can manipulate
-                    //- the SVG further with CSS.
-
-                    != h.icon('pencil')
-                    // TODO: remove // img(src="/images/icons/pencil.svg" width=30 height=30)
+                    button edit
 
             //- String interpolation with fallback: ${store.photo || 'store.png'} .
             //- If the store has no photo, show store.png instead

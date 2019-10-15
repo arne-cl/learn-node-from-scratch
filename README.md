@@ -702,31 +702,151 @@ router.get('/stores', catchErrors(storeController.getStores));
 14 - Creating an Editing Flow for Stores
 ========================================
 
-- wildcard route '/stores/:id/edit'
+- goal: edit existing stores and update them in the database
 
-- editStore controller
-    - find store given its id
-    - later: only store owner should be able to edit this
-    - render the edit form
+This lesson introduces **wildcard routes**, e.g. `/stores/:id/edit` which use
+URLs like `/stores/123/edit`. The ID `123` will be stored in `req.params.id`.
+
+We'll add two such routes, one for GETting the editable page of a store
+and another for POSTing the edited store (thereby updating the store's
+information in the database):
+
+```
+router.get('/stores/:id/edit', catchErrors(storeController.editStore));
+router.post('/add/:id', catchErrors(storeController.updateStore));
+```
+
+Now, we need to add the controllers that these routes call. `editStore`
+fetches the store with the given ID and renders it in the `editStore`
+view:
+
+```
+exports.editStore = async (req, res) => {
+   // .findOne() returns (a Promise of ) the store with the given ID from MongoDB
+    const store = await Store.findOne({ _id: req.params.id });
+
+    res.render('editStore', {
+        title: `Edit ${store.name}`,
+        store: store,
+    });
+};
+```
+
+We can use the existing `editStore` view without change for both adding new
+and editing existing stores:
+
+```
+extends layout
+
+include mixins/_storeForm
+
+block content
+    .inner
+        h2= title
+        +storeForm(store)
+```
+
+but we need to adapt the `storeForm` mixin slightly to make it work for both cases.
+
+The action `/add/${store._id || ''}` means that the form is POSTed to `/add/` if
+the given store has no `_id` field (i.e. if it is a new store) and to 
+`/add/${store._id} otherwise.
+In the case of an existing store, we prefill the `input` and `textarea` fields
+and set the checkboxes for all tags that were previously checked:
+
+```
+mixin storeForm(store = {})
+    form(action=`/add/${store._id || ''}` method="POST" class="card")
+
+        label(for="name") Store Name
+        input(type="text" name="name" value=store.name)
+
+        label(for="description") Description
+        //- unlike <input>, <textarea> has no "value" field
+        textarea(name="description" value=store.description)= store.description
+
+        //- define choices of tags to add to the restaurant (list of checkboxes)
+        - const choices = ['Wifi', 'Open Late', '24/7', 'Vegan', 'Cats']
+
+        //- store all existing tags in an array. create a new array if
+        //- this is a new store.
+        - const tags = store.tags || []
+
+        ul.tags
+            each choice in choices
+                .tag.tag__choice
+
+                    //- checked=(tags.includes(choice)) means we're calling JS
+                    //- to see if the tags array includes the given choice.
+                    //- If so, the box will be checked.
+                    input(type="checkbox" id=choice value=choice name="tags" checked=(tags.includes(choice)))
+                    label(for=choice) #{choice}
+        input(type="submit" value="Save" class="button")
+```
+
+The `updateStore` controller updates the given store (req.params.id) in MongoDB
+and redirects to that store's edit page afterwards:
+
+```
+exports.updateStore = async (req, res) => {
+    // MongoDB: find and update the store in one go
+    const query = { _id: req.params.id };
+    const update = req.body;
+    const options = {
+        new: true, // return updated store instead of the old one
+        runValidators: true // always run the model validators
+                            // (by default, they're only run during model creation!)
+    }
+
+    // findOneAndUpdate() does only run, if we call exec() on it
+    const store = await Store.findOneAndUpdate(query, update, options).exec();
+
+    res.redirect(`/stores/${store._id}/edit`);
+};
+```
+
+Finally, we will add an "edit" button to each store card, which links to that
+store's edit page:
+
+```
+mixin storeCard(store = {})
+    .store
+        .store__hero
+            .store__actions
+                a(href=`/stores/${store._id}/edit`)
+                    button edit
+```
 
 
 15 - Saving Lat and Lng for each store
 ======================================
 
+16 - Geocoding Data with Google Maps
+====================================
 
-16 - Geocoding Data with Google Maps.mp4
-17 - Quick Data Visualization Tip.mp4
-18 - Uploading and Resizing Images with Middleware.mp4
-19 - Routing and Templating Single Stores.mp4
-20 - Using Pre-Save hooks to make Unique Slugs.mp4
-21 - Custom MongoDB Aggregations.mp4
-22 - Multiple Query Promises with Async Await.mp4
+17 - Quick Data Visualization Tip
+=================================
+
+18 - Uploading and Resizing Images with Middleware
+==================================================
+
+19 - Routing and Templating Single Stores
+=========================================
+
+20 - Using Pre-Save hooks to make Unique Slugs
+==============================================
+
+21 - Custom MongoDB Aggregations
+================================
+
+22 - Multiple Query Promises with Async Await
+=============================================
 
 
 
 
-Rewriting the whole thing from scratch
-======================================
+Hints for creating the whole thing from scratch
+===============================================
 
 - run ``npm init`` to create a ``package.json``
 - create a route and a minimal start.js
