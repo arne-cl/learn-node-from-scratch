@@ -1,21 +1,29 @@
 mixin storeForm(store = {})
-    // TODO: remove after documentation // p It works. Store name: #{store.name}
+    //- POST the form to /add if its a new store and to /add/$STORE_ID otherwise
+    form(action=`/add/${store._id || ''}` method="POST" class="card")
 
-    //- class="card" is used by our CSS
-    form(action="/add" method="POST" class="card")
-        
         //- We need to fill all fields in models/Store.js::storeSchema .
         label(for="name") Store Name
-        input(type="text" name="name")
-        
+        input(type="text" name="name" value=store.name)
+
         label(for="description") Description
-        textarea(name="description")
+        //- unlike <input>, <textarea> has no "value" field
+        textarea(name="description" value=store.description)= store.description
 
         //- define choices of tags to add to the restaurant (list of checkboxes)
         - const choices = ['Wifi', 'Open Late', '24/7', 'Vegan', 'Cats']
+
+        //- store all existing tags in an array. create a new array if
+        //- this is a new store.
+        - const tags = store.tags || []
+
         ul.tags
             each choice in choices
                 .tag.tag__choice
-                    input(type="checkbox" id=choice value=choice name="tags")
+
+                    //- checked=(tags.includes(choice)) means we're calling JS
+                    //- to see if the tags array includes the given choice.
+                    //- If so, the box will be checked.
+                    input(type="checkbox" id=choice value=choice name="tags" checked=(tags.includes(choice)))
                     label(for=choice) #{choice}
         input(type="submit" value="Save" class="button")

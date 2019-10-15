@@ -702,9 +702,18 @@ router.get('/stores', catchErrors(storeController.getStores));
 14 - Creating an Editing Flow for Stores
 ========================================
 
+- wildcard route '/stores/:id/edit'
+
+- editStore controller
+    - find store given its id
+    - later: only store owner should be able to edit this
+    - render the edit form
 
 
-15 - Saving Lat and Lng for each store.mp4
+15 - Saving Lat and Lng for each store
+======================================
+
+
 16 - Geocoding Data with Google Maps.mp4
 17 - Quick Data Visualization Tip.mp4
 18 - Uploading and Resizing Images with Middleware.mp4

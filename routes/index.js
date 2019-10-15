@@ -16,7 +16,10 @@ router.get('/stores', catchErrors(storeController.getStores));
 
 router.get('/add', storeController.addStore);
 router.post('/add', catchErrors(storeController.createStore));
+router.post('/add/:id', catchErrors(storeController.updateStore));
 
+// edit existing store (ID given by request param)
+router.get('/stores/:id/edit', catchErrors(storeController.editStore));
 
 // GET /name-age-params?name=John&age=23
 router.get('/name-age-params', storeController.nameAgeExample);

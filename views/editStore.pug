@@ -4,6 +4,8 @@ include mixins/_storeForm
 
 block content
     .inner
+        pre= h.dump(store)
+
         //- We can use "= foo" as an alternative to "#{foo}" if we only want
         //- to show "foo" and not interpolate a string.
         h2= title
@@ -11,4 +13,4 @@ block content
         //- We could add our edit form here, but we want to reuse it, so we'll
         //- include it as a "mixin" (loaded from views/mixins/_storeForm.pug),
         //- which works similar to a function.
-        +storeForm({name: 'Veggie Tuna'})
+        +storeForm(store)
