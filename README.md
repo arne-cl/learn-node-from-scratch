@@ -4,6 +4,62 @@ Learn Node
 These are my notes for Wes Bos' [Learn Node](https://learnnode.com/) online class.
 
 
+Table of Contents
+=================
+
+- [Learn Node](#learn-node)
+- [01 - Getting Setup](#01---getting-setup)
+  * [Install NodeJS](#install-nodejs)
+  * [Install packages in the starter files directory](#install-packages-in-the-starter-files-directory)
+  * [Configure IDE](#configure-ide)
+- [02 - Setting up Mongo DB](#02---setting-up-mongo-db)
+  * [Install on Ubuntu / Linux Mint](#install-on-ubuntu---linux-mint)
+  * [Install on arch linux](#install-on-arch-linux)
+  * [Configure MongoDB](#configure-mongodb)
+- [03 - Starter Files and Environmental Variables](#03---starter-files-and-environmental-variables)
+  * [app.js](#appjs)
+  * [start.js](#startjs)
+  * [Start our example app](#start-our-example-app)
+- [04 - Core Concept - Routing](#04---core-concept---routing)
+  * [routes/index.js](#routes-indexjs)
+- [05 - Core Concept - Templating](#05---core-concept---templating)
+  * [hello.pug](#hellopug)
+  * [Put variables / request params into template](#put-variables---request-params-into-template)
+  * [Use base templates](#use-base-templates)
+- [06 - Core Concept - Template Helpers](#06---core-concept---template-helpers)
+  * [moment.js](#momentjs)
+- [07 - Core Concept - Controllers and the MVC Pattern](#07---core-concept---controllers-and-the-mvc-pattern)
+- [08 - Core Concept - Middleware and Error Handling](#08---core-concept---middleware-and-error-handling)
+  * [Route-specific middleware](#route-specific-middleware)
+  * [Global middleware](#global-middleware)
+  * [app.js](#appjs-1)
+  * [cookie-parser](#cookie-parser)
+- [09 - Creating our Store Model](#09---creating-our-store-model)
+  * [models/Store.js](#models-storejs)
+- [10 - Saving Stores and using Mixins](#10---saving-stores-and-using-mixins)
+  * [Mixins](#mixins)
+  * [Sending and parsing HTML forms](#sending-and-parsing-html-forms)
+- [11 - Using Async Await](#11---using-async-await)
+- [12 - Flash Messages](#12---flash-messages)
+- [13 - Querying our Database for Stores](#13---querying-our-database-for-stores)
+- [14 - Creating an Editing Flow for Stores](#14---creating-an-editing-flow-for-stores)
+- [15 - Saving Lat and Lng for each store](#15---saving-lat-and-lng-for-each-store)
+- [16 - Geocoding Data with Google Maps](#16---geocoding-data-with-google-maps)
+- [17 - Quick Data Visualization Tip](#17---quick-data-visualization-tip)
+- [18 - Uploading and Resizing Images with Middleware](#18---uploading-and-resizing-images-with-middleware)
+- [19 - Routing and Templating Single Stores](#19---routing-and-templating-single-stores)
+- [20 - Using Pre-Save hooks to make Unique Slugs](#20---using-pre-save-hooks-to-make-unique-slugs)
+- [21 - Custom MongoDB Aggregations](#21---custom-mongodb-aggregations)
+- [22 - Multiple Query Promises with Async Await](#22---multiple-query-promises-with-async-await)
+- [Hints for creating the whole thing from scratch](#hints-for-creating-the-whole-thing-from-scratch)
+  * [Get rid of MongoDB warnings](#get-rid-of-mongodb-warnings)
+  * [Hot reloading](#hot-reloading)
+  * [Slug creation](#slug-creation)
+
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+
+
+
 01 - Getting Setup
 ==================
 
