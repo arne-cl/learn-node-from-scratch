@@ -8,7 +8,11 @@ mixin storeForm(store = {})
 
         label(for="description") Description
         //- unlike <input>, <textarea> has no "value" field
-        textarea(name="description" value=store.description)= store.description
+        textarea(name="description")= store.description
+
+        //- address, lat, lon
+        label(for="address") Address
+        input(type="text" id="address" name="location[address]" value=store.location.address)
 
         //- define choices of tags to add to the restaurant (list of checkboxes)
         - const choices = ['Wifi', 'Open Late', '24/7', 'Vegan', 'Cats']

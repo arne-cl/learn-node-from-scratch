@@ -877,6 +877,35 @@ mixin storeCard(store = {})
 15 - Saving Lat and Lng for each store
 ======================================
 
+- custom data types in MongoDB
+
+
+In the `storeForm` mixin, we use `location[address]` for the `name` field
+of the `<input>` element.
+
+```
+        label(for="address")
+        input(type="text" id="address" name="location[address]")
+```
+
+We can only do this because we use the `body-parser` middleware in `app.js`
+with the `extended: tree` setting, which allows us to use inputs with nested
+data in them (`location[address]` refers to `location.address` in our `Store`
+MongoDB schema).
+
+```
+app.use(bodyParser.urlencoded({ extended: true }));
+```
+
+What if we try to access `store.location.address` but `store.location`
+doesn't exist?
+
+```
+input(type="text" id="address" name="location[address]" value=store.location.address)
+```
+
+
+
 16 - Geocoding Data with Google Maps
 ====================================
 

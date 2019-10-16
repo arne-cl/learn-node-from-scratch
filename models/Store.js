@@ -10,17 +10,35 @@ mongoose.Promise = global.Promise;
 
 // create a schema for our store
 const storeSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    trim: true,
-    required: 'Please enter a store name!' // true would work, but emits an unhelpful error msg
-  },
-  slug: String,
-  description: {
-    type: String,
-    trim: true
-  },
-  tags: [String]
+    name: {
+        type: String,
+        trim: true,
+        required: 'Please enter a store name!' // true would work, but emits an unhelpful error msg
+    },
+    slug: String,
+    description: {
+        type: String,
+        trim: true
+    },
+    tags: [String],
+    created: {
+        type: Date,
+        default: Date.now // calls Date.now() in JS
+    },
+    location: {
+        type: { // a type object
+            type: String,
+            default: 'Point'
+        },
+        coordinates: [{ // list of floats
+            type: Number,
+            required: 'Please enter coordinates!'
+        }],
+        address: {
+            type: String,
+            required: 'Please enter the address of the store!'
+        }
+    }
 });
 
 // We will autogenerate the slug from the name field.
