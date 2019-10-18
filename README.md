@@ -951,8 +951,6 @@ Hints for creating the whole thing from scratch
 - run ``npm init`` to create a ``package.json``
 - create a route and a minimal start.js
 
-- we don't need the ``body-parser`` parser library mentioned in video 04
-
 Get rid of MongoDB warnings
 ---------------------------
 
