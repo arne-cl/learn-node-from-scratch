@@ -3,14 +3,15 @@ Learn Node
 
 These are my notes for Wes Bos' [Learn Node](https://learnnode.com/) online
 class. Its goal is to teach you to build a restaurant reviewing web app
-(front- and back-end) using NodeJS, Express and MongoDB.
+(front- and back-end) using [NodeJS](https://nodejs.org/),
+[Express](http://expressjs.com/) and [MongoDB](https://www.mongodb.com/).
 
 He is teaching the class from the perspective of a front-end developer wanting
 to become "full stack". As such, he provides a huge number of "starter files"
 including custom javascript helper functions, tons of dependencies and CSS
 "magic".
 
-As my background is back-end development and I prefer to learn from first
+As my background is in back-end development and I prefer to learn from first
 principles, I reduced the codebase to the minimum needed for the
 concepts/examples taught in the given lesson.
 (You can check out the respective state of the codebase / course by looking
